@@ -1,5 +1,5 @@
-setwd('Coding//mlp_interview_project/')
-# library(xts)
+
+setwd('../mlp_interview_project/')
 library(reshape2)  # for data wrangling
 library(quadprog)  # for QP optimize
 
@@ -293,6 +293,8 @@ trd <- read.csv('trd.csv')
 net_pos <- dcast(pos, sym~user, sum, value.var = 'pos')
 head(net_pos)
 
+write.table(net_pos, file='output4-1.txt', append=TRUE)
+
 # ii. list out all boxed positions 
 unique(pos$pb)
 # first, aggregate positions for each pb
@@ -316,6 +318,11 @@ for (i in 1:nrow(boxed_pos_c)){
 }
 
 print(result)
+temp_result <- c()
+for (i in 1:length(result)){
+    temp_result <- rbind(temp_result, result[[i]])
+}
+write.table(temp_result, 'output4-2.txt')
 
 # iii. Find all the potential crossings
 trd <- trd[order(trd$sym), ]
@@ -325,10 +332,14 @@ trd <- transform(trd, trd=ifelse((qty>=0), qty, 0))
 # trd$jrnl <- sapply(trd$qty,FUN=function(x) if(x>=0) 0 else -x)
 head(trd)
 
+write.table(trd, 'output4-3.txt')
+
 # iv. Find the total quantity to trade
 trd_total<-aggregate(trd[,c('jrnl','trd')],  by=list(trd$sym), FUN=sum)
 colnames(trd_total)[1] <- 'sym'
 head(trd_total)
+
+write.table(trd_total, 'output4-4.txt')
 
 # v. Find the final position per user, per sym
 net_pos <- dcast(pos, sym~user, sum, value.var = 'pos')
@@ -337,6 +348,8 @@ trd_pivot <- dcast(trd, sym~user, value.var = 'qty', sum, fill=0.0)
 agg_pos <- rbind(melt(net_pos, id='sym'), melt(trd_pivot, id='sym'))
 final_pos <- dcast(agg_pos, sym~variable, sum)
 head(final_pos)
+
+write.table(final_pos, 'output4-5.txt')
 
 # vi. Unit test
 ## test i, net pos
