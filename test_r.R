@@ -354,12 +354,7 @@ write.table(final_pos, 'output4-5.txt')
 # vi. Unit test
 ## test i, net pos
 # input
-
-if(sum(pos$pos)==sum(net_pos[,-1])){
-    print('Net position mathced')
-} else {
-    print('Net position not right')
-}
+sum(pos$pos)==sum(net_pos[,-1])
 
 ## test ii. boxed
 sum(boxed_pos_m$value) == sum(net_pos[,-1])
